@@ -16,6 +16,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setFixedSize(894, 603)
         self.inter=False
+        self.tableView.setShowGrid(False)
         self.StartButton.clicked.connect(self.startButtonClicked)
         self.stopButton.clicked.connect(self.stop)
         self.dateUpdate.setText(f'Last Updated On: {date.today()}')
