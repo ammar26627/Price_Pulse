@@ -75,9 +75,9 @@ class TableModel(QtGui.QStandardItemModel):
 
     def __init__(self, data, parent=None):
            QtGui.QStandardItemModel.__init__(self, parent)
-           self.currentRow=0
            self._data = data
            for row in data.values.tolist():
+
                data_row = [ QtGui.QStandardItem("{}".format(x)) for x in row ]
                self.appendRow(data_row)
            return
@@ -88,9 +88,10 @@ class TableModel(QtGui.QStandardItemModel):
             if value.startswith("https://") or value.startswith("http://"):
                 return QtGui.QColor("blue")
         elif role == Qt.DisplayRole:
-                return str(self._data.iloc[index.row(), index.column()])
-        elif role == Qt.EditRole:
-                return str(self._data.iloc[index.row(), index.column()])
+                value = str(self._data.iloc[index.row(),index.column()])
+                if value.startswith("https://") or value.startswith("http://"):
+                    return ('Click To Open Link')
+                return value
         if role == Qt.BackgroundRole and index.column()==7:
                 try:
                     if (int(self._data.iloc[index.row(),7]) >= int(self._data.iloc[index.row(),9])):
@@ -114,6 +115,9 @@ class TableModel(QtGui.QStandardItemModel):
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
             return self._data.index[x]
         return None
+    
+    def flags(self, index):
+        return Qt.ItemIsSelectable | Qt.ItemIsEnabled | ~Qt.ItemIsEditable
     
 
 class Worker(QThread):
