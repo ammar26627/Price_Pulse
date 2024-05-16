@@ -38,7 +38,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.inter=True
 
     def getResults(self):
-         excelFilePath=r"C:\Users\muham\OneDrive\Documents\Frontend\excel1.xlsx"
+         excelFilePath=r"Price_Pulse\excel1.xlsx"
          worksheetName='Sheet1'
 
          self.data = self._data = pd.read_excel(excelFilePath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status'],axis=1)
