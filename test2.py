@@ -7,6 +7,7 @@ from datetime import date
 import time
 import webbrowser
 from main_window_ui import Ui_MainWindow
+import os.path
 
 class Window(QMainWindow, Ui_MainWindow):
 
@@ -38,10 +39,10 @@ class Window(QMainWindow, Ui_MainWindow):
         self.inter=True
 
     def getResults(self):
-         excelFilePath=r"Price_Pulse\excel1.xlsx"
+         fullpath = os.path.abspath('..\Price_Pulse\excel1.xlsx')
          worksheetName='Sheet1'
 
-         self.data = self._data = pd.read_excel(excelFilePath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status'],axis=1)
+         self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status'],axis=1)
          self.model = TableModel(self.data)
          self.tableView.setModel(self.model)
 
