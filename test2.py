@@ -110,12 +110,12 @@ class TableModel(QtGui.QStandardItemModel):
                 return value
         if role == Qt.BackgroundRole and index.column()==7:
                 try:
-                    if (int(self._data.iloc[index.row(),7]) >= int(self._data.iloc[index.row(),9])):
-                        return QVariant(QColor(QtCore.Qt.green))
+                    if (int(self._data.iloc[index.row(),7]) >= int(self._data.iloc[index.row(),8])):
+                        return QVariant(QColor(127, 255, 212))
                     else:
-                        return QVariant(QColor(QtCore.Qt.red))
+                        return QVariant(QColor(248, 131, 121))
                 except ValueError:
-                        return QVariant(QColor(QtCore.Qt.yellow))
+                        return QVariant(QColor(255,255,153))
 
 
 
