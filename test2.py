@@ -24,6 +24,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.StartButton.clicked.connect(self.startButtonClicked)
         self.stopButton.clicked.connect(self.stop)
         self.dateUpdate.setText(f'Last Updated On: {date.today()}')
+        self.dateUpdate.setReadOnly(True)
         self.searchBox.setPlaceholderText("Search...")
         self.searchBox.textChanged.connect(self.myfilter)
         self.tableView.doubleClicked.connect(self.openLink)
@@ -116,6 +117,8 @@ class TableModel(QtGui.QStandardItemModel):
                         return QVariant(QColor(248, 131, 121))
                 except ValueError:
                         return QVariant(QColor(255,255,153))
+        if role == Qt.ToolTipRole:
+            return  str(self._data.iloc[index.row(),index.column()])
 
 
 
@@ -273,90 +276,6 @@ QProgressBar::chunk {
 	background-color: #04b97f;
 	border-radius: 5px;
 }
-QMenuBar {
-	background-color: #1e1d23;
-}
-QMenuBar::item {
-	color: #a9b7c6;
-  	spacing: 3px;
-  	padding: 1px 4px;
-  	background: #1e1d23;
-}
-
-QMenuBar::item:selected {
-  	background:#1e1d23;
-	color: #FFFFFF;
-}
-QMenu::item:selected {
-	border-style: solid;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-left-color: #04b97f;
-	border-bottom-color: transparent;
-	border-left-width: 2px;
-	color: #FFFFFF;
-	padding-left:15px;
-	padding-top:4px;
-	padding-bottom:4px;
-	padding-right:7px;
-	background-color: #1e1d23;
-}
-QMenu::item {
-	border-style: solid;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-left-color: transparent;
-	border-bottom-color: transparent;
-	border-bottom-width: 1px;
-	border-style: solid;
-	color: #a9b7c6;
-	padding-left:17px;
-	padding-top:4px;
-	padding-bottom:4px;
-	padding-right:7px;
-	background-color: #1e1d23;
-}
-QMenu{
-	background-color:#1e1d23;
-}
-QTabWidget {
-	color:rgb(0,0,0);
-	background-color:#1e1d23;
-}
-QTabWidget::pane {
-		border-color: rgb(77,77,77);
-		background-color:#1e1d23;
-		border-style: solid;
-		border-width: 1px;
-    	border-radius: 6px;
-}
-QTabBar::tab {
-	border-style: solid;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-left-color: transparent;
-	border-bottom-color: transparent;
-	border-bottom-width: 1px;
-	border-style: solid;
-	color: #808086;
-	padding: 3px;
-	margin-left:3px;
-	background-color: #1e1d23;
-}
-QTabBar::tab:selected, QTabBar::tab:last:selected, QTabBar::tab:hover {
-  	border-style: solid;
-	border-top-color: transparent;
-	border-right-color: transparent;
-	border-left-color: transparent;
-	border-bottom-color: #04b97f;
-	border-bottom-width: 2px;
-	border-style: solid;
-	color: #FFFFFF;
-	padding-left: 3px;
-	padding-bottom: 2px;
-	margin-left:3px;
-	background-color: #1e1d23;
-}
 
 QComboBox {
 	color: #a9b7c6;	
@@ -377,7 +296,6 @@ QComboBox: !editable:on, QComboBox::drop-down:editable:on {
 	color: #a9b7c6;	
 	background: #1e1d23;
 }
-
 ''')
 app.setStyle("Fusion")
 window.show()
