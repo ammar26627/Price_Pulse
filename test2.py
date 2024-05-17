@@ -82,10 +82,13 @@ class Window(QMainWindow, Ui_MainWindow):
             self.tableView.setModel(self.model2)
 
     def reset(self):
-        self.tableView.setModel(self.model)
+        try:
+             self.tableView.setModel(self.model)
+        except AttributeError:
+            self.show_dialog("Please Load Data First")
 
     def show_dialog(self,text):
-        dialog = QDialog(self)
+        dialog = QDialog(self, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowCloseButtonHint)
         dialog.setWindowTitle("Error")
         label = QLabel(text)
         dialog_layout = QVBoxLayout()
