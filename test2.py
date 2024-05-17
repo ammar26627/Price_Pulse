@@ -117,7 +117,7 @@ class TableModel(QtGui.QStandardItemModel):
                 if value.startswith("https://") or value.startswith("http://"):
                     return ('Click To Open Link')
                 return value
-        if role == Qt.BackgroundRole and index.column()==7:
+        if role == Qt.BackgroundRole :
                 try:
                     if (int(self._data.iloc[index.row(),7]) >= int(self._data.iloc[index.row(),8])):
                         return QVariant(QColor(127, 255, 212))
