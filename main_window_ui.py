@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow.ui'
+# Form implementation generated from reading ui file 'MainWindow2.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -15,31 +15,26 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(894, 603)
-        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+        MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.StartButton = QtWidgets.QPushButton(self.centralwidget)
         self.StartButton.setGeometry(QtCore.QRect(90, 10, 60, 41))
         self.StartButton.setAutoFillBackground(False)
-        self.StartButton.setStyleSheet("color:rgb(255, 255, 255);\n"
-"background-color: green;\n"
-"border-width: 2px;\n"
-"border-radius: 15px;\n"
-"padding: 4px;")
+        self.StartButton.setStyleSheet("")
         self.StartButton.setAutoDefault(False)
         self.StartButton.setDefault(False)
         self.StartButton.setFlat(False)
         self.StartButton.setObjectName("StartButton")
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.progressBar.setGeometry(QtCore.QRect(230, 21, 251, 20))
-        self.progressBar.setStyleSheet("\n"
-"border-width: 1px;\n"
-"border-radius: 5px;")
+        self.progressBar.setStyleSheet("")
         self.progressBar.setProperty("value", 0)
         self.progressBar.setAlignment(QtCore.Qt.AlignCenter)
         self.progressBar.setObjectName("progressBar")
         self.tableView = QtWidgets.QTableView(self.centralwidget)
         self.tableView.setGeometry(QtCore.QRect(0, 120, 891, 451))
+        self.tableView.setStyleSheet("background-color: rgb(169,183,198);")
         self.tableView.setObjectName("tableView")
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(10, 10, 71, 41))
@@ -63,11 +58,13 @@ class Ui_MainWindow(object):
         self.resetButton.setObjectName("resetButton")
         self.dateUpdate = QtWidgets.QLineEdit(self.centralwidget)
         self.dateUpdate.setGeometry(QtCore.QRect(592, 20, 291, 22))
+        self.dateUpdate.setStyleSheet("")
         self.dateUpdate.setFrame(False)
         self.dateUpdate.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.dateUpdate.setObjectName("dateUpdate")
         self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox_2.setGeometry(QtCore.QRect(110, 70, 91, 41))
+        self.comboBox_2.setStyleSheet("")
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
@@ -76,11 +73,7 @@ class Ui_MainWindow(object):
         self.stopButton = QtWidgets.QPushButton(self.centralwidget)
         self.stopButton.setGeometry(QtCore.QRect(160, 10, 60, 41))
         self.stopButton.setAutoFillBackground(False)
-        self.stopButton.setStyleSheet("color:rgb(255, 255, 255);\n"
-"background-color: red;\n"
-"border-width: 2px;\n"
-"border-radius: 15px;\n"
-"padding: 4px;")
+        self.stopButton.setStyleSheet("")
         self.stopButton.setAutoDefault(False)
         self.stopButton.setDefault(False)
         self.stopButton.setFlat(False)
@@ -92,6 +85,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
+        self.label.setStyleSheet("")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setWordWrap(False)
         self.label.setObjectName("label")
