@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog,QApplication,QMainWindow,QLabel,QVBoxLayout
 from PyQt5 import QtCore,QtGui
 from PyQt5.QtCore import Qt,QThread,QVariant
-from PyQt5.QtGui import QBrush,QColor
+from PyQt5.QtGui import QColor
 import pandas as pd
 from datetime import date
 import time
@@ -53,12 +53,17 @@ class Window(QMainWindow, Ui_MainWindow):
          self.tableView.setModel(self.model)
 
     def myfilter(self,regex: str, case=False):
-        df=self.data
-        match = df.select_dtypes(include=[object, "string"])
-        match=df[match.apply(lambda column: column.str.contains(regex, regex=True, case=case, na=False)).any(axis=1)]
-        self.model1=TableModel(match)
-        self.tableView.setModel(None)
-        self.tableView.setModel(self.model1)
+        try:
+             df=self.data
+             df = df.astype(str)
+        except AttributeError:
+            self.show_dialog("Please Load Data First")
+        else:
+            match = df.select_dtypes(include=[object, "string"])
+            match=df[match.apply(lambda column: column.str.contains(regex, regex=True, case=case, na=False)).any(axis=1)]
+            self.model1=TableModel(match)
+            self.tableView.setModel(None)
+            self.tableView.setModel(self.model1)
 
     def openLink(self):
         for index in self.tableView.selectionModel().selectedIndexes():
