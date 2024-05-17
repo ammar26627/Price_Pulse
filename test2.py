@@ -73,6 +73,9 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def sort(self,index):
         dict={1:'Our_Price',2:'Other_Seller_Price'}
+        if index==3:
+           self.sortbydiff()
+           return
         try:
              self.data = self.data.sort_values(dict[index], ascending=False)
         except AttributeError:
@@ -80,6 +83,15 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             self.model2=TableModel(self.data)
             self.tableView.setModel(self.model2)
+
+    def sortbydiff(self):
+        self.data['diff']=self.data['Our_Price']-self.data['Other_Seller_Price']
+        self.data = self.data.sort_values('diff',ascending=True).drop(['diff'],axis=1)
+        self.model2=TableModel(self.data)
+        self.tableView.setModel(self.model2)
+
+
+
 
     def reset(self):
         try:
@@ -161,7 +173,7 @@ class Worker(QThread):
 
 
 
-app=QApplication(sys.argv)
+app=QApplication(sys.argv + ['-platform', 'windows:darkmode=1'])
 window=Window()
 app.setStyleSheet('''QMainWindow {
 	background-color:#1e1d23;
