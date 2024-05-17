@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog,QApplication,QMainWindow,QTableWidget
+from PyQt5.QtWidgets import QDialog,QApplication,QMainWindow,QLabel,QVBoxLayout
 from PyQt5 import QtCore,QtGui
 from PyQt5.QtCore import Qt,QThread,QVariant
 from PyQt5.QtGui import QBrush,QColor
@@ -47,7 +47,7 @@ class Window(QMainWindow, Ui_MainWindow):
          fullpath = os.path.abspath('..\Price_Pulse\excel1.xlsx')
          worksheetName='Sheet1'
 
-         self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status'],axis=1)
+         self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status','Product_Status'],axis=1)
          self.model = TableModel(self.data)
          self.tableView.setModel(self.model)
 
@@ -67,13 +67,25 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def sort(self,index):
         dict={1:'Our_Price',2:'Other_Seller_Price'}
-        self.data = self.data.sort_values(dict[index], ascending=False)
-        self.model2=TableModel(self.data)
-        self.tableView.setModel(self.model2)
+        try:
+             self.data = self.data.sort_values(dict[index], ascending=False)
+        except AttributeError:
+            self.show_dialog("Please Load Data First")
+        else:
+            self.model2=TableModel(self.data)
+            self.tableView.setModel(self.model2)
 
     def reset(self):
         self.tableView.setModel(self.model)
 
+    def show_dialog(self,text):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Error")
+        label = QLabel(text)
+        dialog_layout = QVBoxLayout()
+        dialog_layout.addWidget(label)
+        dialog.setLayout(dialog_layout)
+        dialog.exec_()
 
 class TableModel(QtGui.QStandardItemModel):
 
