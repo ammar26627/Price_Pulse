@@ -15,7 +15,8 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.setWindowIcon(QtGui.QIcon('icon.png'))
+        fullpath = os.path.abspath('..\Price_Pulse\icon.png')
+        self.setWindowIcon(QtGui.QIcon(fullpath))
         self.setWindowTitle('PricePulse')
         self.setFixedSize(894, 603)
         self.inter=False
