@@ -121,8 +121,8 @@ class Ui_MainWindow(object):
         self.dateUpdate.setText(_translate("MainWindow", "Last Updated On:"))
         self.comboBox_2.setItemText(0, _translate("MainWindow", "Sort By"))
         self.comboBox_2.setItemText(1, _translate("MainWindow", "Our Price"))
-        self.comboBox_2.setItemText(2, _translate("MainWindow", "Minimum Price"))
-        self.comboBox_2.setItemText(3, _translate("MainWindow", "Name"))
+        self.comboBox_2.setItemText(2, _translate("MainWindow", "Other Seller Price"))
+        self.comboBox_2.setItemText(3, _translate("MainWindow", "Price Difference"))
         self.stopButton.setText(_translate("MainWindow", "Stop"))
         self.label.setText(_translate("MainWindow", "Data Table"))
 
