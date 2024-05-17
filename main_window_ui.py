@@ -35,6 +35,9 @@ class Ui_MainWindow(object):
         self.tableView = QtWidgets.QTableView(self.centralwidget)
         self.tableView.setGeometry(QtCore.QRect(0, 120, 891, 451))
         self.tableView.setStyleSheet("background-color: rgb(169,183,198);")
+        self.tableView.setStyleSheet("background-color: rgb(169,183,198);\n"
+"selection-color: rgb(255,255,255);\n"
+"selection-background-color:rgb(0,0,0);")
         self.tableView.setObjectName("tableView")
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(10, 10, 71, 41))
