@@ -86,8 +86,8 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def sortbydiff(self):
         self.data['diff']=self.data['Our_Price']-self.data['Other_Seller_Price']
-        self.data = self.data.sort_values('diff',ascending=True).drop(['diff'],axis=1)
-        self.model2=TableModel(self.data)
+        self.data = self.data.sort_values('diff',ascending=True)
+        self.model2=TableModel(self.data.drop(['diff'],axis=1))
         self.tableView.setModel(self.model2)
 
 
@@ -131,7 +131,7 @@ class TableModel(QtGui.QStandardItemModel):
                 return value
         if role == Qt.BackgroundRole :
                 try:
-                    if (int(self._data.iloc[index.row(),7]) >= int(self._data.iloc[index.row(),8])):
+                    if (int(self._data.iloc[index.row(),7]) <= int(self._data.iloc[index.row(),8])):
                         return QVariant(QColor(127, 255, 212))
                     else:
                         return QVariant(QColor(248, 131, 121))
