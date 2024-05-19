@@ -15,7 +15,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        fullpath = os.path.abspath('..\Frontend\icon.png')
+        fullpath = os.path.abspath('..\Frontend2\icon.png')
         self.setWindowIcon(QtGui.QIcon(fullpath))
         self.setWindowTitle('PricePulse')
         self.setFixedSize(894, 603)
@@ -48,7 +48,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.inter=True
 
     def getResults(self):
-         fullpath = os.path.abspath('..\Frontend\excel1.xlsx')
+         fullpath = os.path.abspath('..\Frontend2\excel1.xlsx')
          worksheetName='Sheet1'
 
          self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status','Product_Status'],axis=1)
@@ -81,10 +81,10 @@ class Window(QMainWindow, Ui_MainWindow):
             if  not self.activeFilters:
                 df=df[df.apply(lambda column: column.str.contains(regex, regex=True, case=case, na=False)).any(axis=1)]
             else:
+                filtered=[]
                 for filter in self.activeFilters:
-                    filtered=[df.loc[df[filter].str.contains(regex, regex=True, case=case)]]
-                df=pd.concat(filtered,axis=1)
-                print(df)
+                    filtered.append(df.loc[df[filter].str.contains(regex, regex=True, case=case)])
+                df = pd.concat(filtered, ignore_index=True) 
             self.populate(df)
     
 
