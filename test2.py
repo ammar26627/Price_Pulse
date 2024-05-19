@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog,QApplication,QMainWindow,QLabel,QVBoxLayout
+from PyQt5.QtWidgets import QDialog,QApplication,QMainWindow,QLabel,QVBoxLayout,QComboBox
 from PyQt5 import QtCore,QtGui
 from PyQt5.QtCore import Qt,QThread,QVariant
 from PyQt5.QtGui import QColor
@@ -15,11 +15,13 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        fullpath = os.path.abspath('..\Price_Pulse\icon.png')
+        fullpath = os.path.abspath('..\Frontend2\icon.png')
         self.setWindowIcon(QtGui.QIcon(fullpath))
         self.setWindowTitle('PricePulse')
         self.setFixedSize(894, 603)
         self.inter=False
+        self.activeFilters=[]
+        self.filters=[['ProductID',False],['Name',False],['Brand',False],['Model',False]]
         self.tableView.setShowGrid(False)
         self.StartButton.clicked.connect(self.startButtonClicked)
         self.stopButton.clicked.connect(self.stop)
@@ -28,8 +30,9 @@ class Window(QMainWindow, Ui_MainWindow):
         self.searchBox.setPlaceholderText("Search...")
         self.searchBox.textChanged.connect(self.myfilter)
         self.tableView.doubleClicked.connect(self.openLink)
-        self.comboBox_2.currentIndexChanged.connect(self.sort)
+        self.sortBy.currentIndexChanged.connect(self.sort)
         self.resetButton.clicked.connect(self.reset)
+        self.sortBy_2.currentIndexChanged.connect(self.chooseFilters)
 
     def startButtonClicked(self):
         self.worker=Worker()
@@ -45,12 +48,28 @@ class Window(QMainWindow, Ui_MainWindow):
         self.inter=True
 
     def getResults(self):
-         fullpath = os.path.abspath('..\Price_Pulse\excel1.xlsx')
+         fullpath = os.path.abspath('..\Frontend2\excel1.xlsx')
          worksheetName='Sheet1'
 
          self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status','Product_Status'],axis=1)
          self.model = TableModel(self.data)
          self.tableView.setModel(self.model)
+
+    def chooseFilters(self,index):
+        if index==0:
+             self.filters=[['ProductID',False],['Name',False],['Brand',False],['Model',False]]
+             return   
+        index=index-1
+        self.activeFilters=[]
+        if self.filters[index][1]:
+            self.filters[index][1]=False
+        else:
+            self.filters[index][1]=True
+        for filter in self.filters:
+            if filter[1]==True:
+                self.activeFilters.append(filter[0])
+        print(self.filters,self.activeFilters)
+                
 
     def myfilter(self,regex: str, case=False):
         try:
@@ -59,11 +78,16 @@ class Window(QMainWindow, Ui_MainWindow):
         except AttributeError:
             self.show_dialog("Please Load Data First")
         else:
-            match = df.select_dtypes(include=[object, "string"])
-            match=df[match.apply(lambda column: column.str.contains(regex, regex=True, case=case, na=False)).any(axis=1)]
-            self.model1=TableModel(match)
-            self.tableView.setModel(None)
-            self.tableView.setModel(self.model1)
+            if  not self.activeFilters:
+                df=df[df.apply(lambda column: column.str.contains(regex, regex=True, case=case, na=False)).any(axis=1)]
+            else:
+                for filter in self.activeFilters:
+                    filtered=[df.loc[df[filter].str.contains(regex, regex=True, case=case)]]
+                df=pd.concat(filtered,axis=1)
+                print(df)
+            self.populate(df)
+    
+
 
     def openLink(self):
         for index in self.tableView.selectionModel().selectedIndexes():
@@ -81,18 +105,19 @@ class Window(QMainWindow, Ui_MainWindow):
         except AttributeError:
             self.show_dialog("Please Load Data First")
         else:
-            self.model2=TableModel(self.data)
-            self.tableView.setModel(self.model2)
+            self.populate(self.data)
 
     def sortbydiff(self):
         self.data['diff']=self.data['Our_Price']-self.data['Other_Seller_Price']
         self.data = self.data.sort_values('diff',ascending=True)
-        self.model2=TableModel(self.data.drop(['diff'],axis=1))
-        self.tableView.setModel(self.model2)
+        self.populate(self.data.drop(['diff'],axis=1))
 
 
 
 
+    def populate(self,df):
+        self.tableView.setModel(TableModel(df))
+        
     def reset(self):
         try:
              self.tableView.setModel(self.model)
@@ -106,7 +131,8 @@ class Window(QMainWindow, Ui_MainWindow):
         dialog_layout = QVBoxLayout()
         dialog_layout.addWidget(label)
         dialog.setLayout(dialog_layout)
-        dialog.exec_()
+        dialog.exec_() 
+
 
 class TableModel(QtGui.QStandardItemModel):
 
@@ -157,7 +183,7 @@ class TableModel(QtGui.QStandardItemModel):
     
     def flags(self, index):
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled | ~Qt.ItemIsEditable
-    
+
 
 class Worker(QThread):
     updateProgress=QtCore.pyqtSignal(int)
