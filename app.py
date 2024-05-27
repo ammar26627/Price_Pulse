@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from scraper import scrape, test
 import sys
 
 class MainWindow(QMainWindow):
@@ -21,8 +20,7 @@ class MainWindow(QMainWindow):
         self.button1.clicked.connect(self.clicked)
     
     def clicked(self) -> None:
-        scrape("Excel_1", [])
-        # test()
+        self.label.setText("Started")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
