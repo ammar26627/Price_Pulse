@@ -38,7 +38,9 @@ class Window(QWidget, Ui_login_window):
     def name(self,name):
          self.full_name=name
     def product(self,key):
-         self.product_key=key
+         regex=r'[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}$'
+         if re.match(regex,key,):
+              self.product_key=key
     def trial(self):
          self.trial_window=TrialWindow()
          self.trial_window.show()
