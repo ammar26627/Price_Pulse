@@ -1,7 +1,8 @@
 from login_window_ui import Ui_login_window
 from trial_window_ui import Ui_trial_window
-from PyQt5.QtWidgets import QWidget,QLineEdit,QApplication
+from PyQt5.QtWidgets import QWidget,QLineEdit,QApplication,QDialog,QLabel,QVBoxLayout
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 import sys,os
 import re
 
@@ -11,6 +12,10 @@ import re
 class Window(QWidget, Ui_login_window):
 
     def __init__(self, parent=None):
+        self.email_id=''
+        self.phone_number=''
+        self.product_key=''
+        self.full_name=''
         super().__init__(parent)
         self.setupUi(self)
         fullpath = os.path.abspath('icon.png')
@@ -19,19 +24,42 @@ class Window(QWidget, Ui_login_window):
         self.setWindowIcon(QIcon(fullpath))
         self.email_edit.textChanged.connect(self.email)
         self.number_edit.textChanged.connect(self.number)
+        self.name_edit.textChanged.connect(self.name)
+        self.login_button.clicked.connect(self.signUp)
         self.sign_up.clicked.connect(self.trial)
     
     def email(self,emailid):
             regex=r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
             if re.match(regex,emailid,re.IGNORECASE):
-                 self.emailid=emailid
+                 self.email_id=emailid
     def number(self,number):
          if re.match(r'[0-9]{10}',number):
-              print(number)
+              self.phone_number=number
+    def name(self,name):
+         self.full_name=name
+    def product(self,key):
+         self.product_key=key
     def trial(self):
          self.trial_window=TrialWindow()
          self.trial_window.show()
-         
+    def show_dialog(self,text):
+        dialog = QDialog(self, Qt.WindowSystemMenuHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint)
+        dialog.setWindowTitle("Error")
+        label = QLabel(text)
+        dialog_layout = QVBoxLayout()
+        dialog_layout.addWidget(label)
+        dialog.setLayout(dialog_layout)
+        dialog.exec_() 
+    def signUp(self):
+         list=[[self.email_id,'Invalid email'],[self.full_name,'Please enter your name'],[self.product_key,'Please enter product key',self.phone_number,'Invalid Number']]
+         for item in list:
+              if item[0]=='':
+                   self.show_dialog(item[1])
+                   break
+
+    def keyPressEvent(self, e):
+         if e.key() in (Qt.Key_Return, Qt.Key_Enter):
+              self.signUp()    
 
 class TrialWindow(QWidget,Ui_trial_window):
      def __init__(self, parent=None):
@@ -47,7 +75,7 @@ class TrialWindow(QWidget,Ui_trial_window):
                  self.emailid=emailid
      def number(self,number):
         if re.match(r'[0-9]{10}',number):
-              print(number)
+              self.number=number
      def product(self):
           ...
         
