@@ -9,6 +9,7 @@ import webbrowser
 from main_window_ui import Ui_MainWindow
 import os.path
 import sys
+import math
 
 class Window(QMainWindow, Ui_MainWindow):
 
@@ -21,6 +22,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.setFixedSize(894, 603)
         self.inter=False
         self.activeFilters=[]
+        self.items_per_page=10
         self.filters=[['ProductID',False],['Name',False],['Brand',False],['Model',False]]
         self.tableView.setShowGrid(False)
         self.StartButton.clicked.connect(self.startButtonClicked)
@@ -33,6 +35,10 @@ class Window(QMainWindow, Ui_MainWindow):
         self.sortBy.currentIndexChanged.connect(self.sort)
         self.resetButton.clicked.connect(self.reset)
         self.sortBy_2.currentIndexChanged.connect(self.chooseFilters)
+        self.nextButton.clicked.connect(self.nextPage)
+        self.prevButton.clicked.connect(self.prevPage)
+        self.jumpTo.textChanged.connect(self.jump)
+        self.item_per_pg.textChanged.connect(self.itemsPerPage)
 
     def startButtonClicked(self):
         self.worker=Worker()
@@ -52,8 +58,7 @@ class Window(QMainWindow, Ui_MainWindow):
          worksheetName='Sheet1'
 
          self.data = self._data = pd.read_excel(fullpath,worksheetName).drop(['Gem_Catalogue_Id','Quantity','Inventory_Status','Product_Status'],axis=1)
-         self.model = TableModel(self.data)
-         self.tableView.setModel(self.model)
+         self.populate(self.data)
 
     def chooseFilters(self,index):
         if index==0:
@@ -111,16 +116,65 @@ class Window(QMainWindow, Ui_MainWindow):
         self.data['diff']=self.data['Our_Price']-self.data['Other_Seller_Price']
         self.data = self.data.sort_values('diff',ascending=True)
         self.populate(self.data.drop(['diff'],axis=1))
+    
+    def nextPage(self):
+        if self.current_page+1<self.max_pages:
+            self.current_page+=1
+            self.tableView.setModel(TableModel(self.pages[self.current_page]))
+            self.currentIndexLabel()
 
-
-
+    def jump(self,page):
+        try:
+            page=int(page)-1
+        except:
+            pass
+        else:
+            if page<self.max_pages and page>=0 and page!=self.current_page:
+                self.current_page=page
+                self.tableView.setModel(TableModel(self.pages[self.current_page]))
+                self.currentIndexLabel()
+    
+    def prevPage(self):
+        if self.current_page-1>=0:
+            self.current_page-=1
+            self.tableView.setModel(TableModel(self.pages[self.current_page]))
+            self.currentIndexLabel()
+    
+    def currentIndexLabel(self):
+        self.pageNo.setText(f'Page {self.current_page+1} of {self.max_pages}')
+     
+     
+    def itemsPerPage(self,items):
+        try:
+            items=int(items)
+        except:
+            pass
+        try:
+            if items<=self.currentdata.shape[0]:
+                self.items_per_page=items
+        except:
+            pass
+        else:
+            self.populate(self.currentdata)
 
     def populate(self,df):
-        self.tableView.setModel(TableModel(df))
+        self.currentdata=df
+        len=df.shape[0]
+        self.max_pages=math.ceil(len/self.items_per_page)
+        self.pages=[]
+        for i in range(self.max_pages):
+            self.pages.append(df[i*self.items_per_page:(i+1)*self.items_per_page])
+
+        try:
+            self.tableView.setModel(TableModel(self.pages[0]))
+        except IndexError:
+            self.show_dialog('No Items Found')
+        self.current_page=0
+        self.currentIndexLabel()
         
     def reset(self):
         try:
-             self.tableView.setModel(self.model)
+             self.populate(self._data)
         except AttributeError:
             self.show_dialog("Please Load Data First")
 
